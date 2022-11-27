@@ -30,18 +30,19 @@ def down?(inputs)
 end
 
 
-# STATES
-TITLE = :title
-INTRO = :intro
-AUDIT = :audit
-OUTRO = :outro
+module Scene
+  TITLE = :title
+  INTRO = :intro
+  AUDIT = :audit
+  OUTRO = :outro
+end
 
 def tick_title(args)
   args.outputs.labels << { x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 4 }.merge(WHITE)
   args.outputs.labels << { x: 120, y: 120, text: "A game by Brett Chalupa", size_enum: 2 }.merge(WHITE)
 
   if confirm?(args.inputs)
-    args.state.scene = INTRO
+    args.state.scene = Scene::INTRO
   end
 end
 
@@ -58,7 +59,7 @@ def tick_intro(args)
   end
 
   if (args.state.intro.index >= INTRO_TEXT.length)
-    args.state.scene = AUDIT
+    args.state.scene = Scene::AUDIT
   end
 
   args.outputs.labels << { x: 120, y: 180, text: INTRO_TEXT[args.state.intro.index], size_enum: 2 }.merge(WHITE)
@@ -148,7 +149,7 @@ def tick_audit(args)
     state.audit.current_question_index += 1
 
     if (state.audit.current_question_index > TOTAL_QUESTIONS - 1)
-      state.scene = OUTRO
+      state.scene = Scene::OUTRO
     end
 
     state.audit.current_answer_index = 0
@@ -174,7 +175,7 @@ end
 
 def tick(args)
   args.outputs.background_color = TRUE_BLACK.values
-  args.state.scene ||= TITLE
+  args.state.scene ||= Scene::TITLE
 
   send("tick_#{args.state.scene}", args)
 
