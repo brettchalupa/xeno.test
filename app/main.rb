@@ -181,8 +181,10 @@ def tick_audit(args)
 end
 
 def init(args)
-  args.outputs.sounds << 'sounds/Night.ogg'
+  args.audio[:bg] = { input: "sounds/Night.ogg", looping: true, gain: 0.8, pitch: 1.0 }
 end
+
+MUSIC_VOL = 0.8
 
 def tick(args)
   init(args) if args.state.tick_count == 1
@@ -190,6 +192,14 @@ def tick(args)
   args.state.scene ||= Scene::TITLE
 
   send("tick_#{args.state.scene}", args)
+
+  if args.inputs.keyboard.key_down.m
+    if args.audio[:bg][:gain] == 0.0
+      args.audio[:bg][:gain] = MUSIC_VOL
+    else
+      args.audio[:bg][:gain] = 0.0
+    end
+  end
 
   debug_tick(args)
 end
