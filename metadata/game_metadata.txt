@@ -1,7 +1,7 @@
-devid=myitchusername
-devtitle=My Name
-gameid=my-game-title
-gametitle=My Game Title
+devid=brettchalupa
+devtitle=Brett Chalupa
+gameid=xenoaudit
+gametitle=XENO.AUDIT
 version=0.1
 icon=metadata/icon.png
 
