@@ -56,6 +56,7 @@ INTRO_TEXT = [
   "> The officer and their Enforcer lead you to a white room.",
   "> All you see is a screen next to a camera with a keyboard beneath it.",
   "OFFICER: We've had reports of humans in the area.",
+  "OFFICER: We all know that's unacceptable.",
   "OFFICER: Step up to the terminal.",
   "OFFICER: The audit will only take 20 seconds.",
   "OFFICER: You have nothing to worry about.",
@@ -179,7 +180,12 @@ def tick_audit(args)
   args.outputs.sprites << { x: active_answer[:x] - 32, y: active_answer[:y] - 16, w: 16, h: 16, path: SPATHS[:cursor] }
 end
 
+def init(args)
+  args.outputs.sounds << 'sounds/Night.ogg'
+end
+
 def tick(args)
+  init(args) if args.state.tick_count == 1
   args.outputs.background_color = TRUE_BLACK.values
   args.state.scene ||= Scene::TITLE
 
