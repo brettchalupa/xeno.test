@@ -30,13 +30,24 @@ def down?(inputs)
 end
 
 
+# STATES
+TITLE = :title
 INTRO = :intro
 AUDIT = :audit
 OUTRO = :outro
 
+def tick_title(args)
+  args.outputs.labels << { x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 4 }.merge(WHITE)
+  args.outputs.labels << { x: 120, y: 120, text: "A game by Brett Chalupa", size_enum: 2 }.merge(WHITE)
+
+  if confirm?(args.inputs)
+    args.state.scene = INTRO
+  end
+end
+
 INTRO_TEXT = [
-  "OFFICER: We've had reports of anthros in the area.",
-  "OFFICER: Step up the terminal. The audit will only take 20 seconds.",
+  "OFFICER: We've had reports of humans in the area.",
+  "OFFICER: Step up to the terminal. The audit will only take 20 seconds.",
   "OFFICER: You have nothing to worry about.",
 ]
 def tick_intro(args)
@@ -50,7 +61,6 @@ def tick_intro(args)
     args.state.scene = AUDIT
   end
 
-  args.outputs.labels << { x: 120, y: args.grid.h - 120, text: "XENO.AUDIT", size_enum: 4 }.merge(WHITE)
   args.outputs.labels << { x: 120, y: 180, text: INTRO_TEXT[args.state.intro.index], size_enum: 2 }.merge(WHITE)
 end
 
@@ -64,7 +74,7 @@ def tick_outro(args)
          else
            OUTRO_TEXT[:fail]
          end
-  args.outputs.labels << { x: 120, y: 120, text: text }.merge(WHITE)
+  args.outputs.labels << { x: 120, y: 120, text: text, size_enum: 2 }.merge(WHITE)
 
   if confirm?(args.inputs)
     $gtk.reset
@@ -90,13 +100,13 @@ def multi_sample(array, length)
 end
 
 QUESTIONS = [
-  { q: "Your best friend falls in love with your dog.", a_anthro: "End the friendship", a_xeno: "Give the dog to them" },
-  { q: "You find $20.00 on the ground. You haven't eaten in 7 hours.", a_anthro: "Leave it", a_xeno: "Eat it" },
-  { q: "A bird steals your favorite pen.", a_anthro: "Cry", a_xeno: "Jump up, grab the bird, reclaim the pen" },
-  { q: "A man driving a vehicle with a bumper sticker that says \"How's my driving? Call 1-800-FUCK-OFF\" cuts you off in traffic.", a_anthro: "Flip the bird", a_xeno: "Call the number" },
-  { q: "A song you hate comes on the radio.", a_anthro: "Listen to it", a_xeno: "Turn it off" },
-  { q: "Your spouse tells you they're in love with your best friend.", a_anthro: "Explode", a_xeno: "Deeply contemplate polygamy" },
-  { q: "Your roomate left 2 chips in the bottom of the bag that you bought.", a_anthro: "Move", a_xeno: "Buy a new bag" },
+  { q: "Your best friend falls in love with your dog.", a_human: "End the friendship", a_xeno: "Give the dog to them" },
+  { q: "You find $20.00 on the ground. You haven't eaten in 7 hours.", a_human: "Leave it", a_xeno: "Eat it" },
+  { q: "A bird steals your favorite pen.", a_human: "Cry", a_xeno: "Jump up, grab the bird, reclaim the pen" },
+  { q: "A man driving a vehicle with a bumper sticker that says \"How's my driving? Call 1-800-FUCK-OFF\" cuts you off in traffic.", a_human: "Flip the bird", a_xeno: "Call the number" },
+  { q: "A song you hate comes on the radio.", a_human: "Listen to it", a_xeno: "Turn it off" },
+  { q: "Your spouse tells you they're in love with your best friend.", a_human: "Explode", a_xeno: "Deeply contemplate polygamy" },
+  { q: "Your roomate left 2 chips in the bottom of the bag that you bought.", a_human: "Move", a_xeno: "Buy a new bag" },
 ]
 AUDIT_TITLE_BASE = "Audit in progress"
 TOTAL_QUESTIONS = 4
@@ -122,7 +132,7 @@ def tick_audit(args)
   end
 
   state.audit.current_answers ||= [
-    { x: 120, text: question[:a_anthro], size: 0, alignment: 0 }.merge(WHITE),
+    { x: 120, text: question[:a_human], size: 0, alignment: 0 }.merge(WHITE),
     { x: 120, text: question[:a_xeno], size: 0, alignment: 0 }.merge(WHITE),
   ].sort_by { rand }.map.with_index do |a, i|
     a[:y] = 240 - (i * 40)
@@ -164,7 +174,7 @@ end
 
 def tick(args)
   args.outputs.background_color = TRUE_BLACK.values
-  args.state.scene ||= INTRO
+  args.state.scene ||= TITLE
 
   send("tick_#{args.state.scene}", args)
 
