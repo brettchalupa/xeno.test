@@ -1,7 +1,7 @@
 devid=brettchalupa
 devtitle=Brett Chalupa
-gameid=xenoaudit
-gametitle=XENO.AUDIT
+gameid=xenotest
+gametitle=XENO.TEST
 version=0.1
 icon=metadata/icon.png
 
