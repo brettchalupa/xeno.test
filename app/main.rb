@@ -39,7 +39,9 @@ end
 
 def tick_title(args)
   args.outputs.labels << { x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 4 }.merge(WHITE)
-  args.outputs.labels << { x: 120, y: 120, text: "A game by Brett Chalupa", size_enum: 2 }.merge(WHITE)
+  args.outputs.labels << { x: 120, y: args.grid.h - 180, text: "Prove you're not human.", size_enum: 0 }.merge(WHITE)
+  args.outputs.labels << { x: 120, y: 260, text: "Z or Enter to Confirm | WASD/arrow keys to change selection", size_enum: 2 }.merge(WHITE)
+  args.outputs.labels << { x: 120, y: 120, text: "A game by Brett Chalupa", size_enum: 0 }.merge(WHITE)
 
   if confirm?(args.inputs)
     args.state.scene = Scene::INTRO
@@ -47,8 +49,15 @@ def tick_title(args)
 end
 
 INTRO_TEXT = [
+  "> An officer stops you in the streets. Their Enforcer hovers at their side.",
+  "OFFICER: I need you to come with me.",
+  "> With no choice, you follow.",
+  "> You arrive at the station. It's seen better days.",
+  "> The officer and their Enforcer lead you to a white room.",
+  "> All you see is a screen next to a camera with a keyboard beneath it.",
   "OFFICER: We've had reports of humans in the area.",
-  "OFFICER: Step up to the terminal. The audit will only take 20 seconds.",
+  "OFFICER: Step up to the terminal.",
+  "OFFICER: The audit will only take 20 seconds.",
   "OFFICER: You have nothing to worry about.",
 ]
 def tick_intro(args)
@@ -67,10 +76,12 @@ end
 
 OUTRO_TEXT = {
   pass: "OFFICER: Carry on.",
-  fail: "> a siren screams, the lights go off, and you hear the door lock",
+  fail: "> Before you even realize you've failed the test, the officer's Enforcer tazes you...",
 }
 def tick_outro(args)
-  text = if args.state.audit.score > 2
+  args.state.pass ||= args.state.audit.score > (args.state.audit.answered_questions.length.to_f * 0.66)
+
+  text = if args.state.pass
            OUTRO_TEXT[:pass]
          else
            OUTRO_TEXT[:fail]
@@ -88,12 +99,12 @@ end
 
 QUESTIONS = [
   { q: "Your best friend falls in love with your dog.", a_human: "End the friendship", a_xeno: "Give the dog to them" },
-  { q: "You find $20.00 on the ground. You haven't eaten in 7 hours.", a_human: "Leave it", a_xeno: "Eat it" },
+  { q: "You find $20.00 on the ground. You haven't eaten in 7 hours.", a_human: "Take it", a_xeno: "Eat it" },
   { q: "A bird steals your favorite pen.", a_human: "Cry", a_xeno: "Jump up, grab the bird, reclaim the pen" },
-  { q: "A man driving a vehicle with a bumper sticker that says \"How's my driving? Call 1-800-FUCK-OFF\" cuts you off in traffic.", a_human: "Flip the bird", a_xeno: "Call the number" },
-  { q: "A song you hate comes on the radio.", a_human: "Listen to it", a_xeno: "Turn it off" },
-  { q: "Your spouse tells you they're in love with your best friend.", a_human: "Explode", a_xeno: "Deeply contemplate polygamy" },
-  { q: "Your roomate left 2 chips in the bottom of the bag that you bought.", a_human: "Move", a_xeno: "Buy a new bag" },
+  # { q: "A man driving a vehicle with a bumper sticker that says \"How's my driving? Call 1-800-FUCK-OFF\" cuts you off in traffic.", a_human: "Flip the bird", a_xeno: "Call the number" },
+  { q: "A song you hate comes on the radio.", a_human: "Begrudgingly listen to it", a_xeno: "Destroy the radio" },
+  { q: "Your spouse tells you they're in love with your best friend.", a_human: "Deeply contemplate polygamy", a_xeno: "Explode, literally" },
+  { q: "Your roommate left 3 chips at the bottom of the bag.", a_human: "Buy a new bag", a_xeno: "Move" },
 ]
 AUDIT_TITLE_BASE = "Audit in progress"
 def tick_audit(args)
