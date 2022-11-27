@@ -86,20 +86,6 @@ def random_index(array)
   rand(array.length)
 end
 
-def multi_sample(array, length)
-  used_indicies = []
-  arr = []
-  length.times do
-    @i = random_index(array)
-    while used_indicies.include?(@i)
-      @i = random_index(array)
-    end
-    used_indicies << @i
-    arr << array[@i]
-  end
-  arr
-end
-
 QUESTIONS = [
   { q: "Your best friend falls in love with your dog.", a_human: "End the friendship", a_xeno: "Give the dog to them" },
   { q: "You find $20.00 on the ground. You haven't eaten in 7 hours.", a_human: "Leave it", a_xeno: "Eat it" },
@@ -110,13 +96,13 @@ QUESTIONS = [
   { q: "Your roomate left 2 chips in the bottom of the bag that you bought.", a_human: "Move", a_xeno: "Buy a new bag" },
 ]
 AUDIT_TITLE_BASE = "Audit in progress"
-TOTAL_QUESTIONS = 4
 def tick_audit(args)
   state = args.state
+  state.audit.count_down ||= 20 * 60
+  state.audit.answered_questions ||= []
   state.audit.score ||= 0
   state.audit.title ||= AUDIT_TITLE_BASE + "."
-  state.audit.questions ||= multi_sample(QUESTIONS, TOTAL_QUESTIONS)
-  state.audit.current_question_index ||= 0
+  state.audit.current_question_index ||= rand(QUESTIONS.length)
   state.audit.current_answer_index ||= 0
 
   if (args.tick_count % 22 == 0)
@@ -125,8 +111,9 @@ def tick_audit(args)
 
   args.outputs.labels << { x: 120, y: 600, text: state.audit.title }.merge(WHITE)
 
-  puts state.audit.questions
-  question = state.audit.questions[state.audit.current_question_index]
+  args.outputs.labels << { x: 120, y: 540, text: "Time remaining: #{state.audit.count_down.idiv(60)}" }.merge(WHITE)
+
+  question = QUESTIONS[state.audit.current_question_index]
 
   args.outputs.labels << args.string.wrapped_lines(question[:q], 60).map_with_index do |s, i|
     { x: 120, y: 400 - (i * 32), text: s, size_enum: 4, alignment: 0 }.merge(WHITE)
@@ -141,17 +128,25 @@ def tick_audit(args)
   end
   args.outputs.labels << state.audit.current_answers
 
+  state.audit.count_down -= 1
+
+  if state.audit.count_down < 0
+    state.scene = Scene::OUTRO
+    return
+  end
+
   if confirm?(args.inputs)
     if state.audit.current_answers[state.audit.current_answer_index][:text] == question[:a_xeno]
       state.audit.score += 1
     end
-
-    state.audit.current_question_index += 1
-
-    if (state.audit.current_question_index > TOTAL_QUESTIONS - 1)
-      state.scene = Scene::OUTRO
+    state.audit.answered_questions << state.audit.current_question_index
+    @i = rand(QUESTIONS.length)
+    puts state.audit.answered_questions.to_a
+    puts state.audit.answered_questions.include?(@i)
+    while state.audit.answered_questions.include?(@i) && state.audit.answered_questions.length < QUESTIONS.length
+      @i = rand(QUESTIONS.length)
     end
-
+    state.audit.current_question_index = @i
     state.audit.current_answer_index = 0
     state.audit.current_answers = nil
     return
