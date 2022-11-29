@@ -2,9 +2,9 @@ TRUE_BLACK = { r: 0, g: 0, b: 0 }
 WHITE = { r: 255, g: 255, b: 255 }
 
 # Access in code with `SPATHS[:my_sprite]`
-# Replace with your sprites!
 SPATHS = {
   cursor: "sprites/cursor.png",
+  terminal: "sprites/terminal.png",
 }
 
 def debug?
@@ -54,13 +54,17 @@ end
 
 INTRO_TEXT = [
   "> An officer stops you in the streets. An Enforcer hovers at their side.",
-  "OFFICER: I need you to come with me.",
-  "> With no choice, you follow.",
-  "> You arrive at the station. It's seen better days.",
-  "> The officer and Enforcer lead you to a white room.",
-  "> All you see is a screen next to a camera with a keyboard beneath it.",
   "OFFICER: We've had reports of humans in the area.",
   "OFFICER: We all know that's unacceptable.",
+  "OFFICER: I need you to come with me.",
+  "> You know resistance is not an option.",
+  "> With no choice, you follow.",
+  "...",
+  "> You arrive at the station. It's seen better days.",
+  "> The officer opens the door to a room with no windows.",
+  "OFFICER: Step inside.",
+  "> The walls are white.",
+  "> The only thing in the room is a screen with a camera built into it.",
   "OFFICER: Step up to the terminal.",
   "OFFICER: The audit will only take 20 seconds.",
   "OFFICER: You have nothing to worry about.",
@@ -115,6 +119,8 @@ QUESTIONS = [
 ]
 AUDIT_TITLE_BASE = "Audit in progress"
 def tick_audit(args)
+  args.outputs.sprites << { x: 0, y: 0, w: args.grid.w, h: args.grid.h, path: SPATHS[:terminal] }
+
   state = args.state
   state.audit.count_down ||= 20 * 60
   state.audit.answered_questions ||= []
@@ -133,7 +139,7 @@ def tick_audit(args)
 
   question = QUESTIONS[state.audit.current_question_index]
 
-  args.outputs.labels << args.string.wrapped_lines(question[:q], 60).map_with_index do |s, i|
+  args.outputs.labels << args.string.wrapped_lines(question[:q], 52).map_with_index do |s, i|
     { x: 120, y: 400 - (i * 32), text: s, size_enum: 4, alignment: 0 }.merge(WHITE)
   end
 
@@ -148,9 +154,16 @@ def tick_audit(args)
 
   state.audit.count_down -= 1
 
-  if state.audit.count_down < 0
-    state.scene = Scene::OUTRO
-    return
+  if $gtk.production
+    if state.audit.count_down < 0
+      state.scene = Scene::OUTRO
+      return
+    end
+  else
+    if args.inputs.keyboard.key_down.f
+      state.scene = Scene::OUTRO
+      return
+    end
   end
 
   if confirm?(args.inputs)
