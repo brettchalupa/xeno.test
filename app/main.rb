@@ -11,6 +11,12 @@ def debug?
   !$gtk.production
 end
 
+def label(attrs)
+  {
+    font: "fonts/Atkinson-Regular.ttf",
+  }.merge(WHITE).merge(attrs)
+end
+
 def play_sound(outputs, key)
   outputs.sounds << "sounds/#{key}.wav"
 end
@@ -46,16 +52,16 @@ end
 
 def tick_title(args)
 
-  args.outputs.labels << { x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 6 }.merge(WHITE)
-  args.outputs.labels << { x: 120, y: args.grid.h - 180, text: "Prove you're not human", size_enum: 2 }.merge(WHITE)
+  args.outputs.labels << label({ x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 6 })
+  args.outputs.labels << label({ x: 120, y: args.grid.h - 180, text: "Prove you're not human", size_enum: 2 })
 
   controls = args.inputs.controller_one.connected ? "Press A to start" : "Press SPACE to start"
 
-  args.outputs.labels << { x: 120, y: 120, text: controls, size_enum: 2 }
+  args.outputs.labels << label({ x: 120, y: 120, text: controls, size_enum: 2 })
     .merge(WHITE)
     .merge(a: fade_alpha(args.state.tick_count))
 
-  args.outputs.labels << { x: args.grid.w - 140, y: 120, text: "A game by Brett Chalupa", size_enum: 0, alignment_enum: 2 }.merge(WHITE)
+  args.outputs.labels << label({ x: args.grid.w - 140, y: 120, text: "A game by Brett Chalupa", size_enum: 0, alignment_enum: 2 })
 
   if confirm?(args.inputs)
     play_sound(args.outputs, :confirm)
@@ -64,8 +70,8 @@ def tick_title(args)
 end
 
 def render_dialog(args, text)
-  args.outputs.labels << { x: 120, y: 140, text: text, size_enum: 2 }.merge(WHITE)
-  args.outputs.sprites << { x: 1000, y: 120, w: 16, h: 16, path: SPATHS[:cursor], angle: 270, a: fade_alpha(args.state.tick_count) }
+  args.outputs.labels << label({ x: 120, y: 140, text: text, size_enum: 2 })
+  args.outputs.sprites << { x: 1100, y: 120, w: 16, h: 16, path: SPATHS[:cursor], angle: 270, a: fade_alpha(args.state.tick_count) }
 end
 
 INTRO_TEXT = [
@@ -185,20 +191,20 @@ def tick_audit(args)
     state.audit.title = AUDIT_TITLE_BASE + ("." * ((args.tick_count % 3) + 1))
   end
 
-  args.outputs.labels << { x: 120, y: 600, size_enum: 3, text: state.audit.title }.merge(WHITE)
+  args.outputs.labels << label({ x: 120, y: 600, size_enum: 3, text: state.audit.title })
 
-  args.outputs.labels << { x: 120, y: 560, size_enum: 1, text: "Time remaining: #{state.audit.count_down.idiv(60)}" }.merge(WHITE)
+  args.outputs.labels << label({ x: 120, y: 560, size_enum: 1, text: "Time remaining: #{state.audit.count_down.idiv(60)}" })
 
   question = QUESTIONS[state.audit.current_question_index]
 
   args.outputs.labels << args.string.wrapped_lines(question[:q], 52).map_with_index do |s, i|
-    { x: 120, y: 400 - (i * 32), text: s, size_enum: 4, alignment_enum: 0 }.merge(WHITE)
+    label({ x: 120, y: 400 - (i * 32), text: s, size_enum: 4, alignment_enum: 0 })
   end
 
   state.audit.current_answers ||= [question[:a_human], question[:a_xeno]].sort_by { rand }
 
   answer_labels = state.audit.current_answers.map.with_index do |answer, i|
-    { x: 160, y: 240 - (i * 52), text: answer, size_enum: 2, alignment_enum: 0 }.merge(WHITE)
+    label({ x: 160, y: 240 - (i * 52), text: answer, size_enum: 2, alignment_enum: 0 })
   end
   args.outputs.labels << answer_labels
 
