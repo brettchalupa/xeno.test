@@ -218,7 +218,12 @@ def tick_audit(args)
 
   state.audit.count_down -= 1
 
+  if state.audit.count_down % 60 == 0
+    play_sound(args.outputs, :tick)
+  end
+
   if state.audit.count_down < 0
+    play_sound(args.outputs, :over)
     state.scene = Scene::OUTRO
     return
   end
