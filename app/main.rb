@@ -11,6 +11,10 @@ def debug?
   !$gtk.production
 end
 
+def play_sound(outputs, key)
+  outputs.sounds << "sounds/#{key}.wav"
+end
+
 CONFIRM_KEYS = [:j, :z, :enter, :space]
 def confirm?(inputs)
   inputs.controller_one.key_down&.a ||
@@ -29,7 +33,6 @@ def down?(inputs)
     (DOWN_KEYS & inputs.keyboard.keys[:down]).any?
 end
 
-
 module Scene
   TITLE = :title
   INTRO = :intro
@@ -44,6 +47,7 @@ def tick_title(args)
   args.outputs.labels << { x: 120, y: 120, text: "A game by Brett Chalupa", size_enum: 0 }.merge(WHITE)
 
   if confirm?(args.inputs)
+    play_sound(args.outputs, :confirm)
     args.state.scene = Scene::INTRO
   end
 end
@@ -65,6 +69,7 @@ def tick_intro(args)
   args.state.intro.index ||= 0
 
   if confirm?(args.inputs)
+    play_sound(args.outputs, :confirm)
     args.state.intro.index += 1
   end
 
@@ -90,6 +95,7 @@ def tick_outro(args)
   args.outputs.labels << { x: 120, y: 120, text: text, size_enum: 2 }.merge(WHITE)
 
   if confirm?(args.inputs)
+    play_sound(args.outputs, :confirm)
     $gtk.reset
   end
 end
@@ -148,6 +154,7 @@ def tick_audit(args)
   end
 
   if confirm?(args.inputs)
+    play_sound(args.outputs, :confirm)
     if state.audit.current_answers[state.audit.current_answer_index][:text] == question[:a_xeno]
       state.audit.score += 1
     end
@@ -184,7 +191,7 @@ def init(args)
   args.audio[:bg] = { input: "sounds/Night.ogg", looping: true, gain: 0.8, pitch: 1.0 }
 end
 
-MUSIC_VOL = 0.8
+MUSIC_VOL = 1.0
 
 def tick(args)
   init(args) if args.state.tick_count == 1
