@@ -10,7 +10,7 @@ A game built for [20 Second Game Jam](https://itch.io/jam/20-second-game-jam) wi
 
 ## Developing
 
-Drop/clone the folder as `mygame` into your DragonRuby Game Toolkit engine folder and start up `dragonruby`.
+Drop/clone the folder as `mygame` into your DragonRuby Game Toolkit engine folder and start up `dragonruby`: `git clone git@github.com:brettchalupa/xeno.test.git mygame`
 
 DragonRuby GTK ver used to build the game: 3.24
 
