@@ -187,24 +187,22 @@ def tick_audit(args)
     state.audit.title = AUDIT_TITLE_BASE + ("." * ((args.tick_count % 3) + 1))
   end
 
-  args.outputs.labels << { x: 120, y: 600, text: state.audit.title }.merge(WHITE)
+  args.outputs.labels << { x: 120, y: 600, size_enum: 3, text: state.audit.title }.merge(WHITE)
 
-  args.outputs.labels << { x: 120, y: 540, text: "Time remaining: #{state.audit.count_down.idiv(60)}" }.merge(WHITE)
+  args.outputs.labels << { x: 120, y: 560, size_enum: 1, text: "Time remaining: #{state.audit.count_down.idiv(60)}" }.merge(WHITE)
 
   question = QUESTIONS[state.audit.current_question_index]
 
   args.outputs.labels << args.string.wrapped_lines(question[:q], 52).map_with_index do |s, i|
-    { x: 120, y: 400 - (i * 32), text: s, size_enum: 4, alignment: 0 }.merge(WHITE)
+    { x: 120, y: 400 - (i * 32), text: s, size_enum: 4, alignment_enum: 0 }.merge(WHITE)
   end
 
-  state.audit.current_answers ||= [
-    { x: 120, text: question[:a_human], size: 0, alignment: 0 }.merge(WHITE),
-    { x: 120, text: question[:a_xeno], size: 0, alignment: 0 }.merge(WHITE),
-  ].sort_by { rand }.map.with_index do |a, i|
-    a[:y] = 240 - (i * 40)
-    a
+  state.audit.current_answers ||= [question[:a_human], question[:a_xeno]].sort_by { rand }
+
+  answer_labels = state.audit.current_answers.map.with_index do |answer, i|
+    { x: 160, y: 240 - (i * 52), text: answer, size_enum: 2, alignment_enum: 0 }.merge(WHITE)
   end
-  args.outputs.labels << state.audit.current_answers
+  args.outputs.labels << answer_labels
 
   state.audit.count_down -= 1
 
@@ -222,7 +220,7 @@ def tick_audit(args)
 
   if confirm?(args.inputs)
     play_sound(args.outputs, :confirm)
-    if state.audit.current_answers[state.audit.current_answer_index][:text] == question[:a_xeno]
+    if state.audit.current_answers[state.audit.current_answer_index] == question[:a_xeno]
       state.audit.score += 1
     end
     state.audit.answered_questions << state.audit.current_question_index
@@ -250,8 +248,8 @@ def tick_audit(args)
     end
   end
 
-  active_answer = state.audit.current_answers[state.audit.current_answer_index]
-  args.outputs.sprites << { x: active_answer[:x] - 32, y: active_answer[:y] - 16, w: 16, h: 16, path: SPATHS[:cursor] }
+  active_answer = answer_labels[state.audit.current_answer_index]
+  args.outputs.sprites << { x: active_answer[:x] - 32, y: active_answer[:y] - 20, w: 16, h: 16, path: SPATHS[:cursor] }
 end
 
 def init(args)
