@@ -218,16 +218,9 @@ def tick_audit(args)
 
   state.audit.count_down -= 1
 
-  if debug?
-    if args.inputs.keyboard.key_down.n
-      state.scene = Scene::OUTRO
-      return
-    end
-  else
-    if state.audit.count_down < 0
-      state.scene = Scene::OUTRO
-      return
-    end
+  if state.audit.count_down < 0
+    state.scene = Scene::OUTRO
+    return
   end
 
   if confirm?(args.inputs)
