@@ -51,23 +51,26 @@ def fade_alpha(tick_count)
 end
 
 def tick_title(args)
-
-  args.outputs.labels << label({ x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 6 })
-  args.outputs.labels << label({ x: 120, y: args.grid.h - 180, text: "Prove you're not human", size_enum: 2 })
+  labels = []
+  labels << label({ x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 6 })
+  labels << label({ x: 120, y: args.grid.h - 180, text: "Prove you're not human", size_enum: 2 })
 
   controller = args.inputs.controller_one.connected
   if controller
-    args.outputs.labels << label({ x: 120, y: 152, text: "Gamepad detected", size_enum: 0 })
+    labels << label({ x: 120, y: 152, text: "Gamepad detected", size_enum: 0 })
   end
-  args.outputs.labels << label({ x: 120, y: 120, text: controller ? "Press A to start" : "Press SPACE to start", size_enum: 2 })
+  labels << label({ x: 120, y: 120, text: controller ? "Press A to start" : "Press SPACE to start", size_enum: 2 })
     .merge(a: fade_alpha(args.state.tick_count))
 
-  args.outputs.labels << label({ x: args.grid.w - 140, y: 120, text: "A game by Brett Chalupa", size_enum: 0, alignment_enum: 2 })
+  labels << label({ x: args.grid.w - 140, y: 120, text: "A game by Brett Chalupa", size_enum: 0, alignment_enum: 2 })
 
   if confirm?(args.inputs)
     play_sound(args.outputs, :confirm)
     args.state.scene = Scene::INTRO
+    return
   end
+
+  args.outputs.labels << labels
 end
 
 def render_dialog(args, text)
@@ -105,6 +108,7 @@ def tick_intro(args)
 
   if (args.state.intro.index >= INTRO_TEXT.length)
     args.state.scene = Scene::AUDIT
+    return
   end
 
   render_dialog(args, INTRO_TEXT[args.state.intro.index])
@@ -195,17 +199,19 @@ def tick_audit(args)
   state.audit.current_question_index ||= rand(QUESTIONS.length)
   state.audit.current_answer_index ||= 0
 
+  labels = []
+
   if (args.tick_count % 22 == 0)
     state.audit.title = AUDIT_TITLE_BASE + ("." * ((args.tick_count % 3) + 1))
   end
 
-  args.outputs.labels << label({ x: 120, y: 600, size_enum: 3, text: state.audit.title })
+  labels << label({ x: 120, y: 600, size_enum: 3, text: state.audit.title })
 
-  args.outputs.labels << label({ x: 120, y: 560, size_enum: 1, text: "Time remaining: #{state.audit.count_down.idiv(60)}" })
+  labels << label({ x: 120, y: 560, size_enum: 1, text: "Time remaining: #{state.audit.count_down.idiv(60)}" })
 
   question = QUESTIONS[state.audit.current_question_index]
 
-  args.outputs.labels << args.string.wrapped_lines(question[:q], 52).map_with_index do |s, i|
+  labels << args.string.wrapped_lines(question[:q], 52).map_with_index do |s, i|
     label({ x: 120, y: 400 - (i * 32), text: s, size_enum: 4, alignment_enum: 0 })
   end
 
@@ -214,7 +220,7 @@ def tick_audit(args)
   answer_labels = state.audit.current_answers.map.with_index do |answer, i|
     label({ x: 160, y: 240 - (i * 52), text: answer, size_enum: 2, alignment_enum: 0 })
   end
-  args.outputs.labels << answer_labels
+  labels << answer_labels
 
   state.audit.count_down -= 1
 
@@ -262,21 +268,23 @@ def tick_audit(args)
 
   active_answer = answer_labels[state.audit.current_answer_index]
   args.outputs.sprites << { x: active_answer[:x] - 32, y: active_answer[:y] - 20, w: 16, h: 16, path: SPATHS[:cursor] }
+
+  args.outputs.labels << labels
 end
 
 def init(args)
   args.audio[:bg] = { input: "sounds/Night.ogg", looping: true, gain: 0.8, pitch: 1.0 }
+
+  if args.gtk.cursor_shown?
+    args.gtk.hide_cursor
+  end
 end
 
 MUSIC_VOL = 1.0
 
 def tick(args)
-  init(args) if args.state.tick_count == 1
   args.outputs.background_color = TRUE_BLACK.values
-
-  if args.gtk.cursor_shown?
-    args.gtk.hide_cursor
-  end
+  init(args) if args.state.tick_count == 1
 
   args.state.scene ||= Scene::TITLE
   args.state.fullscreen ||= false
