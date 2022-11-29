@@ -245,11 +245,13 @@ def tick_audit(args)
   end
 
   if up?(args.inputs)
+    play_sound(args.outputs, :dir)
     state.audit.current_answer_index -= 1
     if state.audit.current_answer_index < 0
       state.audit.current_answer_index = state.audit.current_answers.length - 1
     end
   elsif down?(args.inputs)
+    play_sound(args.outputs, :dir)
     state.audit.current_answer_index += 1
     if state.audit.current_answer_index > state.audit.current_answers.length - 1
       state.audit.current_answer_index = 0
