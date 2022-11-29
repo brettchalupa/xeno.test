@@ -52,8 +52,14 @@ def tick_title(args)
   end
 end
 
+def render_dialog(outputs, text)
+  outputs.labels << { x: 120, y: 140, text: text, size_enum: 2 }.merge(WHITE)
+end
+
 INTRO_TEXT = [
-  "> An officer stops you in the streets. An Enforcer hovers at their side.",
+  "> You are walking home.",
+  "> An officer walks up to you. An Enforcer hovers at their side.",
+  "OFFICER: Citizen, halt.",
   "OFFICER: We've had reports of humans in the area.",
   "OFFICER: We all know that's unacceptable.",
   "OFFICER: I need you to come with me.",
@@ -61,13 +67,14 @@ INTRO_TEXT = [
   "> With no choice, you follow.",
   "...",
   "> You arrive at the station. It's seen better days.",
-  "> The officer opens the door to a room with no windows.",
+  "> The officer opens the door to a room.",
   "OFFICER: Step inside.",
   "> The walls are white.",
+  "> There are no windows.",
   "> The only thing in the room is a screen with a camera built into it.",
   "OFFICER: Step up to the terminal.",
-  "OFFICER: The audit will only take 20 seconds.",
-  "OFFICER: You have nothing to worry about.",
+  "OFFICER: You know the drill. It's a routine test.",
+  "OFFICER: You have 20 seconds to prove you're not human.",
 ]
 def tick_intro(args)
   args.state.intro.index ||= 0
@@ -81,27 +88,54 @@ def tick_intro(args)
     args.state.scene = Scene::AUDIT
   end
 
-  args.outputs.labels << { x: 120, y: 180, text: INTRO_TEXT[args.state.intro.index], size_enum: 2 }.merge(WHITE)
+  render_dialog(args.outputs, INTRO_TEXT[args.state.intro.index])
 end
 
 OUTRO_TEXT = {
-  pass: "OFFICER: Carry on.",
-  fail: "> Before you even realize you've failed the test, the officer's Enforcer tazes you...",
+  pass: [
+    "> The screen shuts off.",
+    "> The room is quiet.",
+    "> All you hear is the quiet whir of your internals.",
+    "> The door opens.",
+    "OFFICER: Carry on with your day, citizen.",
+    "You walk home.",
+  ],
+  fail: [
+    "> The screen shuts off.",
+    "> The room is quiet.",
+    "> All you hear is your heart pounding",
+    "> The door to the room opens.",
+    "> You turn around.",
+    "> The Enforcer approaches, the officer standing behind it.",
+    "OFFICER: Die, human scum.",
+    "> Before you can take one step, the Enforcer strikes.",
+    "...",
+    "",
+  ]
 }
 def tick_outro(args)
   args.state.pass ||= args.state.audit.score > (args.state.audit.answered_questions.length.to_f * 0.66)
+  args.state.outro.index ||= 0
 
-  text = if args.state.pass
+  script = if args.state.pass
            OUTRO_TEXT[:pass]
          else
            OUTRO_TEXT[:fail]
          end
-  args.outputs.labels << { x: 120, y: 120, text: text, size_enum: 2 }.merge(WHITE)
+
+  render_dialog(args.outputs, script[args.state.outro.index])
 
   if confirm?(args.inputs)
     play_sound(args.outputs, :confirm)
+    args.state.outro.index += 1
+  end
+
+  if (args.state.outro.index >= script.length)
+    play_sound(args.outputs, :confirm)
     $gtk.reset
   end
+
+  args.outputs.labels << { x: 120, y: 180, text: INTRO_TEXT[args.state.intro.index], size_enum: 2 }.merge(WHITE)
 end
 
 def random_index(array)
