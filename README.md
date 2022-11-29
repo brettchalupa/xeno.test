@@ -2,7 +2,9 @@
 
 **Prove you're not human**
 
-A game built for [20 Second Game Jam](https://itch.io/jam/20-second-game-jam).
+[Play the XENO.TEST](https://brettchalupa.itch.io/xenotest)
+
+A game built for [20 Second Game Jam](https://itch.io/jam/20-second-game-jam) with DragonRuby Game Toolkit.
 
 ## Settings Controls
 
