@@ -268,6 +268,11 @@ MUSIC_VOL = 1.0
 def tick(args)
   init(args) if args.state.tick_count == 1
   args.outputs.background_color = TRUE_BLACK.values
+
+  if args.gtk.cursor_shown?
+    args.gtk.hide_cursor
+  end
+
   args.state.scene ||= Scene::TITLE
   args.state.fullscreen ||= false
 
