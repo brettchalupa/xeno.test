@@ -49,11 +49,11 @@ def tick_title(args)
 end
 
 INTRO_TEXT = [
-  "> An officer stops you in the streets. Their Enforcer hovers at their side.",
+  "> An officer stops you in the streets. An Enforcer hovers at their side.",
   "OFFICER: I need you to come with me.",
   "> With no choice, you follow.",
   "> You arrive at the station. It's seen better days.",
-  "> The officer and their Enforcer lead you to a white room.",
+  "> The officer and Enforcer lead you to a white room.",
   "> All you see is a screen next to a camera with a keyboard beneath it.",
   "OFFICER: We've had reports of humans in the area.",
   "OFFICER: We all know that's unacceptable.",
