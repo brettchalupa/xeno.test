@@ -267,6 +267,7 @@ def tick(args)
   init(args) if args.state.tick_count == 1
   args.outputs.background_color = TRUE_BLACK.values
   args.state.scene ||= Scene::TITLE
+  args.state.fullscreen ||= false
 
   send("tick_#{args.state.scene}", args)
 
@@ -275,6 +276,13 @@ def tick(args)
       args.audio[:bg][:gain] = MUSIC_VOL
     else
       args.audio[:bg][:gain] = 0.0
+    end
+  end
+
+  if args.gtk.platform?(:desktop)
+    if args.inputs.keyboard.key_down.f
+      args.state.fullscreen = !args.state.fullscreen
+      args.gtk.set_window_fullscreen args.state.fullscreen
     end
   end
 
