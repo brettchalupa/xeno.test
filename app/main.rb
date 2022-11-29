@@ -40,11 +40,22 @@ module Scene
   OUTRO = :outro
 end
 
+def fade_alpha(tick_count)
+  60 + (tick_count * 3) % 240
+end
+
 def tick_title(args)
-  args.outputs.labels << { x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 4 }.merge(WHITE)
-  args.outputs.labels << { x: 120, y: args.grid.h - 180, text: "Prove you're not human.", size_enum: 0 }.merge(WHITE)
-  args.outputs.labels << { x: 120, y: 260, text: "Z or Enter to Confirm | WASD/arrow keys to change selection", size_enum: 2 }.merge(WHITE)
-  args.outputs.labels << { x: 120, y: 120, text: "A game by Brett Chalupa", size_enum: 0 }.merge(WHITE)
+
+  args.outputs.labels << { x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 6 }.merge(WHITE)
+  args.outputs.labels << { x: 120, y: args.grid.h - 180, text: "Prove you're not human", size_enum: 2 }.merge(WHITE)
+
+  controls = args.inputs.controller_one.connected ? "Press A to start" : "Press SPACE to start"
+
+  args.outputs.labels << { x: 120, y: 120, text: controls, size_enum: 2 }
+    .merge(WHITE)
+    .merge(a: fade_alpha(args.state.tick_count))
+
+  args.outputs.labels << { x: args.grid.w - 140, y: 120, text: "A game by Brett Chalupa", size_enum: 0, alignment_enum: 2 }.merge(WHITE)
 
   if confirm?(args.inputs)
     play_sound(args.outputs, :confirm)
@@ -52,13 +63,14 @@ def tick_title(args)
   end
 end
 
-def render_dialog(outputs, text)
-  outputs.labels << { x: 120, y: 140, text: text, size_enum: 2 }.merge(WHITE)
+def render_dialog(args, text)
+  args.outputs.labels << { x: 120, y: 140, text: text, size_enum: 2 }.merge(WHITE)
+  args.outputs.sprites << { x: 1000, y: 120, w: 16, h: 16, path: SPATHS[:cursor], angle: 270, a: fade_alpha(args.state.tick_count) }
 end
 
 INTRO_TEXT = [
   "> You are walking home.",
-  "> An officer walks up to you. An Enforcer hovers at their side.",
+  "> An officer approaches. An Enforcer hovers at their side.",
   "OFFICER: Citizen, halt.",
   "OFFICER: We've had reports of humans in the area.",
   "OFFICER: We all know that's unacceptable.",
@@ -88,7 +100,7 @@ def tick_intro(args)
     args.state.scene = Scene::AUDIT
   end
 
-  render_dialog(args.outputs, INTRO_TEXT[args.state.intro.index])
+  render_dialog(args, INTRO_TEXT[args.state.intro.index])
 end
 
 OUTRO_TEXT = {
@@ -99,18 +111,26 @@ OUTRO_TEXT = {
     "> The door opens.",
     "OFFICER: Carry on with your day, citizen.",
     "You walk home.",
+    "...",
+    "",
+    "THE END",
   ],
   fail: [
     "> The screen shuts off.",
     "> The room is quiet.",
-    "> All you hear is your heart pounding",
+    "> All you hear is your heart pounding.",
     "> The door to the room opens.",
     "> You turn around.",
+    "OFFICER: I knew from the moment I stopped you.",
     "> The Enforcer approaches, the officer standing behind it.",
     "OFFICER: Die, human scum.",
     "> Before you can take one step, the Enforcer strikes.",
+    "> Everything fades to black.",
     "...",
+    "..",
+    ".",
     "",
+    "THE END",
   ]
 }
 def tick_outro(args)
@@ -123,7 +143,7 @@ def tick_outro(args)
            OUTRO_TEXT[:fail]
          end
 
-  render_dialog(args.outputs, script[args.state.outro.index])
+  render_dialog(args, script[args.state.outro.index])
 
   if confirm?(args.inputs)
     play_sound(args.outputs, :confirm)
