@@ -6,6 +6,12 @@
 
 A game built for [20 Second Game Jam](https://itch.io/jam/20-second-game-jam) with DragonRuby Game Toolkit.
 
+## Developing
+
+Drop/clone the folder as `mygame` into your DragonRuby Game Toolkit engine folder and start up `dragonruby`.
+
+DragonRuby GTK ver used to build the game: 3.24
+
 ## Settings Controls
 
 - `m` - toggle music mute
