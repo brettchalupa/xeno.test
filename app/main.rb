@@ -176,6 +176,7 @@ QUESTIONS = [
   { q: "A song you hate comes on the radio.", a_human: "Begrudgingly listen to it", a_xeno: "Destroy the radio" },
   { q: "An empty shopping bag blows down the sidewalk.", a_human: "Ignore it", a_xeno: "Pick it up" },
   { q: "Your spouse tells you they're in love with your best friend.", a_human: "Deeply contemplate polygamy", a_xeno: "Explode, literally" },
+  { q: "You step on a small plastic block your child uses to play with.", a_human: "Scream in pain and curse their name", a_xeno: "Walk around with it lodged in your foot all day" },
   { q: "Your roommate left 3 chips at the bottom of the bag.", a_human: "Buy a new bag", a_xeno: "Move" },
 ]
 AUDIT_TITLE_BASE = "Audit in progress"
