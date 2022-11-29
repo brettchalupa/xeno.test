@@ -2,6 +2,8 @@
 
 **Prove you're not human**
 
+![cover that reads XENO.TEST Prove You're Not Human with two camera lenses](https://img.itch.zone/aW1nLzEwNjQ0Nzc4LnBuZw==/original/oLzUCP.png)
+
 [Play the XENO.TEST](https://brettchalupa.itch.io/xenotest)
 
 A game built for [20 Second Game Jam](https://itch.io/jam/20-second-game-jam) with DragonRuby Game Toolkit.
