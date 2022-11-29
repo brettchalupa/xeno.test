@@ -391,8 +391,8 @@ var statusElement = document.getElementById('status');
 var progressElement = document.getElementById('progress');
 var canvasElement = document.getElementById('canvas');
 
-// canvasElement.style.width = '100%';
-// canvasElement.style.height = '100%';
+canvasElement.style.width = '100%';
+canvasElement.style.height = '100%';
 document.getElementById('borderdiv').style.border = '0px';
 
 //statusElement.style.display = 'none';
