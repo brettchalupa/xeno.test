@@ -154,8 +154,6 @@ def tick_outro(args)
     play_sound(args.outputs, :confirm)
     $gtk.reset
   end
-
-  args.outputs.labels << { x: 120, y: 180, text: INTRO_TEXT[args.state.intro.index], size_enum: 2 }.merge(WHITE)
 end
 
 def random_index(array)
