@@ -213,13 +213,13 @@ def tick_audit(args)
 
   state.audit.count_down -= 1
 
-  if $gtk.production
-    if state.audit.count_down < 0
+  if debug?
+    if args.inputs.keyboard.key_down.n
       state.scene = Scene::OUTRO
       return
     end
   else
-    if args.inputs.keyboard.key_down.f
+    if state.audit.count_down < 0
       state.scene = Scene::OUTRO
       return
     end
