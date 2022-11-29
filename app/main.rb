@@ -55,10 +55,11 @@ def tick_title(args)
   args.outputs.labels << label({ x: 120, y: args.grid.h - 120, text: "XENO.TEST", size_enum: 6 })
   args.outputs.labels << label({ x: 120, y: args.grid.h - 180, text: "Prove you're not human", size_enum: 2 })
 
-  controls = args.inputs.controller_one.connected ? "Press A to start" : "Press SPACE to start"
-
-  args.outputs.labels << label({ x: 120, y: 120, text: controls, size_enum: 2 })
-    .merge(WHITE)
+  controller = args.inputs.controller_one.connected
+  if controller
+    args.outputs.labels << label({ x: 120, y: 152, text: "Gamepad detected", size_enum: 0 })
+  end
+  args.outputs.labels << label({ x: 120, y: 120, text: controller ? "Press A to start" : "Press SPACE to start", size_enum: 2 })
     .merge(a: fade_alpha(args.state.tick_count))
 
   args.outputs.labels << label({ x: args.grid.w - 140, y: 120, text: "A game by Brett Chalupa", size_enum: 0, alignment_enum: 2 })
