@@ -171,8 +171,10 @@ QUESTIONS = [
   { q: "Your best friend falls in love with your dog.", a_human: "End the friendship", a_xeno: "Give the dog to them" },
   { q: "You find $20.00 on the ground. You haven't eaten in 7 hours.", a_human: "Take it", a_xeno: "Eat it" },
   { q: "A bird steals your favorite pen.", a_human: "Cry", a_xeno: "Jump up, grab the bird, reclaim the pen" },
-  # { q: "A man driving a vehicle with a bumper sticker that says \"How's my driving? Call 1-800-FUCK-OFF\" cuts you off in traffic.", a_human: "Flip the bird", a_xeno: "Call the number" },
+  { q: "You spill piping hot coffee on your crotch while driving.", a_human: "Jerk the wheel hard and cause a 10 car pile-up", a_xeno: "Keep driving, unphased" },
+  { q: "You're in the desert. A turtle is on its back. It's struggling to turn over.", a_human: "Turn it over", a_xeno: "Keep walking" },
   { q: "A song you hate comes on the radio.", a_human: "Begrudgingly listen to it", a_xeno: "Destroy the radio" },
+  { q: "An empty shopping bag blows down the sidewalk.", a_human: "Ignore it", a_xeno: "Pick it up" },
   { q: "Your spouse tells you they're in love with your best friend.", a_human: "Deeply contemplate polygamy", a_xeno: "Explode, literally" },
   { q: "Your roommate left 3 chips at the bottom of the bag.", a_human: "Buy a new bag", a_xeno: "Move" },
 ]
