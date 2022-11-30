@@ -290,7 +290,7 @@ def tick_audit(args)
 end
 
 def init(args)
-  args.audio[:bg] = { input: "sounds/Night.ogg", looping: true, gain: 0.8, pitch: 1.0 }
+  args.audio[:bg] = { input: "sounds/Night.ogg", looping: true, gain: MUSIC_VOL, pitch: 1.0 }
 
   if args.gtk.cursor_shown?
     args.gtk.hide_cursor
@@ -307,6 +307,12 @@ def tick(args)
   args.state.fullscreen ||= false
 
   send("tick_#{args.state.scene}", args)
+
+  if args.inputs.mouse.has_focus && args.audio[:bg].paused
+    args.audio[:bg].paused = false
+  elsif !args.inputs.mouse.has_focus && !args.audio[:bg].paused
+    args.audio[:bg].paused = true
+  end
 
   if args.inputs.keyboard.key_down.m
     if args.audio[:bg][:gain] == 0.0
