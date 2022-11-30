@@ -203,6 +203,8 @@ QUESTIONS = [
   { q: "It's your last day on the job. Your boss gifts you a watch and slaps you on the back.", a_human: "Say thank you & put the watch on next to your original watch", a_xeno: "Crush it, you have an internal clock (fools)" },
   { q: "You open your eyes. You're out in nature. The sun hasn't yet risen. Crickets chirp. It's beautiful. What a night.", a_human: "Sigh at the inconvenience of needing to get up and pee", a_xeno: "Freak out because your battery is running low" },
   { q: "Your roommate left 3 chips at the bottom of the bag.", a_human: "Buy a new bag", a_xeno: "Move" },
+  { q: "The food brought to your table at the restaurant isn't what you ordered.", a_human: "Eat it because you're impatient and meek", a_xeno: "Shout \"THIS ISN'T THE ORGANIC OIL I ORDERED!\"" },
+  { q: "Your new fancy earbud falls out into the toilet.", a_human: "Flush it because that's not going back in my ear", a_xeno: "Grab it but accidentally destroy the toilet bowl" },
 ]
 AUDIT_TITLE_BASE = "Audit in progress"
 def tick_audit(args)
