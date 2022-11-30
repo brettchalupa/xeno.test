@@ -260,8 +260,6 @@ def tick_audit(args)
     end
     state.audit.answered_questions << state.audit.current_question_index
     @i = rand(QUESTIONS.length)
-    puts state.audit.answered_questions.to_a
-    puts state.audit.answered_questions.include?(@i)
     while state.audit.answered_questions.include?(@i) && state.audit.answered_questions.length < QUESTIONS.length
       @i = rand(QUESTIONS.length)
     end
