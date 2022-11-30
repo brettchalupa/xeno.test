@@ -161,6 +161,22 @@ def tick_outro(args)
     args.state.outro.index += 1
   end
 
+  labels = []
+  if (args.state.outro.index == script.length - 1)
+    labels << label({ x: 120, y: 600, size_enum: 1, text: "XENO ANSWERS: #{args.state.audit.score}"})
+    labels << label({ x: 120, y: 560, size_enum: 1, text: "HUMAN ANSWERS: #{args.state.audit.answered_questions.length - args.state.audit.score}"})
+    labels << label({ x: 120, y: 520, size_enum: 1, text: "XENO.TEST SCORE: #{(args.state.audit.score / args.state.audit.answered_questions.length * 100).round}%"})
+    labels << label({ x: 120, y: 480, size_enum: 1, text: "MINIMUM PASS THRESHOLD: 66%"})
+
+    if args.state.pass
+      labels << label({ x: 120, y: 440, size_enum: 1, text: "NICE JOB YOU ROBOT FREAK"})
+    else
+      labels << label({ x: 120, y: 440, size_enum: 1, text: "AT LEAST YOUR HUMANITY IS INTACT..."})
+    end
+  end
+
+  args.outputs.labels << labels
+
   if (args.state.outro.index >= script.length)
     play_sound(args.outputs, :confirm)
     $gtk.reset
