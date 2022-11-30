@@ -164,6 +164,7 @@ def tick_outro(args)
   if (args.state.outro.index >= script.length)
     play_sound(args.outputs, :confirm)
     $gtk.reset
+    args.state.intro.index = INTRO_TEXT.length - 1
   end
 end
 
