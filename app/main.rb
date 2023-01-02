@@ -23,20 +23,20 @@ end
 
 CONFIRM_KEYS = [:j, :z, :enter, :space]
 def confirm?(inputs)
-  inputs.controller_one.key_down&.a ||
-    (CONFIRM_KEYS & inputs.keyboard.keys[:down]).any?
+  CONFIRM_KEYS.any? { |k| inputs.keyboard.key_down.send(k) } ||
+    inputs.controller_one.key_down&.a
 end
 
 UP_KEYS = [:up, :w]
 def up?(inputs)
-  inputs.controller_one.key_down&.up ||
-    (UP_KEYS & inputs.keyboard.keys[:down]).any?
+  UP_KEYS.any? { |k| inputs.keyboard.key_down.send(k) } ||
+    inputs.controller_one.key_down&.up
 end
 
 DOWN_KEYS = [:down, :s]
 def down?(inputs)
-  inputs.controller_one.key_down&.down||
-    (DOWN_KEYS & inputs.keyboard.keys[:down]).any?
+  DOWN_KEYS.any? { |k| inputs.keyboard.key_down.send(k) } ||
+    inputs.controller_one.key_down&.down
 end
 
 module Scene
@@ -308,9 +308,9 @@ def tick(args)
 
   send("tick_#{args.state.scene}", args)
 
-  if args.inputs.mouse.has_focus && args.audio[:bg].paused
+  if args.inputs.mouse.has_focus && args.audio[:bg] && args.audio[:bg].paused
     args.audio[:bg].paused = false
-  elsif !args.inputs.mouse.has_focus && !args.audio[:bg].paused
+  elsif !args.inputs.mouse.has_focus && args.audio[:bg] && !args.audio[:bg].paused
     args.audio[:bg].paused = true
   end
 
